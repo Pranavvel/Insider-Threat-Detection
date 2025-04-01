@@ -4,12 +4,11 @@
   - [Quick Glance](#quick-glance)
   - [Further Improvements](#further-improvements)
   - [Setup](#setup)
-  - [Contributors](#contributors)
 
 ## Foreword
-This application is the second iteration of a Challenge for Data Analytics Hackathon with improved performance and code quality. This iteration provides a full in memory streaming solution to the challenge keeping features up to date using redis (Kind of like the Online Store in a Feature Store). Features are not pulled for every request but are instead kept up to date using background threads to refresh the state every n seconeds(TTL configuruation in app/config). The state of the first iteration stil remains in the Hackathon Branch of this repository.
+ This iteration provides a full in memory streaming solution to the challenge keeping features up to date using redis (Kind of like the Online Store in a Feature Store). Features are not pulled for every request but are instead kept up to date using background threads to refresh the state every n seconeds(TTL configuruation in app/config). The state of the first iteration stil remains in the Hackathon Branch of this repository.
 
-For Data Analytics Hackathon our Challenge requirement was to detect an insider privilege missuse detection based on the dataset provided by Lindauer, Brian (2020): Insider Threat Test Dataset[[1]]. The breakdown of steps how the problem was solved might be helpful on how to design such systems. 
+For Data Analytics Hackathon our Challenge requirement was to detect an insider privilege missuse detection based on the dataset: Insider Threat Test Dataset[[1]]. The breakdown of steps how the problem was solved might be helpful on how to design such systems. 
 
 [1]: https://kilthub.cmu.edu/articles/dataset/Insider_Threat_Test_Dataset/12841247/1
 
@@ -69,12 +68,3 @@ Once finished delete the redis container using:
 ```
 make clean
 ```
-
-## Contributors
-
-Mark S,
-Gökhan T,
-Manuel S,
-Deniz D,
-Luis V,
-Pierre R

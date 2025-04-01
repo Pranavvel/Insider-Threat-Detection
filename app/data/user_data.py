@@ -18,6 +18,6 @@ user = user
 logging.warning("Imported User Data")
 
 def join_on_uid(df: pd.DataFrame) -> pd.DataFrame:
-    df[['domain', 'user_id']] = df['user'].str.split('/', 1, expand=True)
+    df[['domain', 'user_id']] = df['user'].str.split('/', n=1, expand=True)
     df = df.join(user, on="user_id")    
     return df
