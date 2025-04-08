@@ -36,10 +36,6 @@ the most important thing to do when solving a problem is finding solutions that 
 
 [2]: https://www.oreilly.com/library/view/designing-machine-learning/9781098107956/
 
-| Alerts Dashboard | Distribution of USB Connections | Distribution of PC Usage | Distribution of Timestamps |
-|--------------------------------------|--------------------------------------|--------------------------------------|--------------------------------------|
-| ![](img/alerts.png) | ![](img/device.png) | ![](img/pc.png) | ![](img/time.png) |
-
 
 ## Further Improvements
 
