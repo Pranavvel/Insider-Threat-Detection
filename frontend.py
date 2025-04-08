@@ -34,7 +34,9 @@ def load_data():
     df = pd.read_json('output.json')
     # Convert and rename columns
     df = df.rename(columns={'time': 'timestamp', 'score': 'risk_score'})
-    df['timestamp'] = pd.to_datetime(df['timestamp'], infer_datetime_format=True)
+    # Normalize timestamps
+    df['timestamp'] = df['timestamp'].str.replace("/", "-")
+    df['timestamp'] = pd.to_datetime(df['timestamp'], errors='coerce', format="%m-%d-%Y %H:%M:%S")
     df['status'] = 'Active'  # Add status column with default value
     return df.sort_values("risk_score", ascending=False)
 
@@ -48,13 +50,13 @@ st.markdown("---")
 # Top metrics
 col1, col2, col3 = st.columns(3)
 with col1:
-    st.markdown(f'<div class="metric-box"> Total Alerts: **{len(alerts_df)}**</div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="metric-box"> Total Alerts: {len(alerts_df)}</div>', unsafe_allow_html=True)
 with col2:
     active_threats = len(alerts_df[alerts_df["status"] == "Active"])
-    st.markdown(f'<div class="metric-box"> Active Threats: **{active_threats}**</div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="metric-box"> Active Threats: {active_threats}</div>', unsafe_allow_html=True)
 with col3:
     isolated_users = len(alerts_df[alerts_df["status"] == "Isolated"])
-    st.markdown(f'<div class="metric-box"> Isolated Users: **{isolated_users}**</div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="metric-box"> Isolated Users: {isolated_users}</div>', unsafe_allow_html=True)
 
 # Alerts table
 st.markdown("---")

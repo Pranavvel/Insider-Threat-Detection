@@ -2,6 +2,8 @@ import time
 from datetime import datetime
 import pandas as pd
 from app.dataflow import timescore, webscore, user, devicescore, pcscore
+from kafka import KafkaConsumer
+import json
 
 def process_line(line):
     # Initial parsing
@@ -74,9 +76,29 @@ if __name__ == "__main__":
             result = process_line(line)
             if result and result.get("score", 0) > 2.5:
                 results.append(result)
-    
-    # Save results to a file
+
     output_file = "output.json"
     with open(output_file, "w") as out_f:
-        import json
+        json.dump(results, out_f, indent=4)
+    
+    # Kafka consumer setup
+    topic_name = "insider-threat-topic"
+    consumer = KafkaConsumer(
+        topic_name,
+        bootstrap_servers=["localhost:9092"],
+        auto_offset_reset="earliest",
+        enable_auto_commit=True,
+        group_id="insider-threat-group",
+        value_deserializer=lambda x: x.decode("utf-8"),
+    )
+
+    print("Listening for Kafka messages...")
+    for message in consumer:
+        line = message.value
+        result = process_line(line)
+        if result and result.get("score", 0) > 2.5:
+            results.append(result)
+            print(f"Processed Kafka message: {result}")
+    
+    with open(output_file, "w") as out_f:
         json.dump(results, out_f, indent=4)
