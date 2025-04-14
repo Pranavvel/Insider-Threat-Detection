@@ -18,7 +18,11 @@ def _format(time: str) -> str:
 
 def score(time: str)-> float:
     key = _format(time)
-    return float(TIMESTAMP_SCORE.loc[key])
+    try:
+        return float(TIMESTAMP_SCORE.loc[key])
+    except KeyError:
+        logging.warning(f"Key {key} not found in TIME_SCORE")
+        return 2.00000000
 
 _refresh()
 threading.Thread(target=lambda: helper.every(config.TIMESTAMP_SCORE_TTL, _refresh)).start()

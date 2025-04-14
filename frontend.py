@@ -78,25 +78,6 @@ st.markdown("---")
 st.subheader("Isolate User")
 selected_user = st.selectbox("Select User to Isolate", alerts_df["user_id"].unique())
 
-col1, col2 = st.columns(2)
-with col1:
-    if st.button("Disable Account", key="disable"):
-        alerts_df.loc[alerts_df["user_id"] == selected_user, "status"] = "Isolated"
-        st.success(f"Account **{selected_user}** disabled!")
-with col2:
-    if st.button("Block Network Access", key="block"):
-        alerts_df.loc[alerts_df["user_id"] == selected_user, "status"] = "Isolated"
-        st.success(f"Network access blocked for **{selected_user}**!")
-
-# Action log
-st.markdown("---")
-st.subheader("Isolation Log")
-action_log = pd.DataFrame({
-    "timestamp": [datetime.now() - timedelta(minutes=i) for i in range(3, 0, -1)],
-    "action": [
-        "Disabled user_5 account",
-        "Blocked IP for user_2",
-        "Isolated user_9"
-    ]
-})
-st.dataframe(action_log, hide_index=True, use_container_width=True)
+if st.button("Isolate User", key="isolate"):
+    alerts_df.loc[alerts_df["user_id"] == selected_user, "status"] = "Isolated"
+    st.success(f"User **{selected_user}** has been isolated!")

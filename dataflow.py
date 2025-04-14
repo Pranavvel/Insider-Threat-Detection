@@ -68,37 +68,46 @@ def sum_score(json_msg):
 
 if __name__ == "__main__":
     results = []
+    processed_activities = set()  # Track unique activities to avoid duplicates
+
     with open("sample.csv", "r") as f:
         # Skip header if exists
         next(f)
         
         for line in f:
             result = process_line(line)
-            if result and result.get("score", 0) > 2.5:
+            if result and result.get("score", 0) > 2.5 and result["activity"] not in processed_activities:
                 results.append(result)
+                processed_activities.add(result["activity"])  # Add the activity to the set
 
     output_file = "output.json"
     with open(output_file, "w") as out_f:
         json.dump(results, out_f, indent=4)
     
-    # Kafka consumer setup
-    topic_name = "insider-threat-topic"
+    # Kafka Consumer Setup
     consumer = KafkaConsumer(
-        topic_name,
-        bootstrap_servers=["localhost:9092"],
+        "vm-logs",  # Topic name from your producer
+        bootstrap_servers=["192.168.56.1:9092"],  # Match producer IP
         auto_offset_reset="earliest",
         enable_auto_commit=True,
-        group_id="insider-threat-group",
+        group_id="threat-analysis-group",
         value_deserializer=lambda x: x.decode("utf-8"),
     )
 
-    print("Listening for Kafka messages...")
-    for message in consumer:
-        line = message.value
-        result = process_line(line)
-        if result and result.get("score", 0) > 2.5:
-            results.append(result)
-            print(f"Processed Kafka message: {result}")
-    
-    with open(output_file, "w") as out_f:
-        json.dump(results, out_f, indent=4)
+    print("Listening for insider threats...")
+    try:
+        for message in consumer:
+            line = message.value
+            result = process_line(line)
+            
+            if result and result.get("score", 0) > 2.5 and result["activity"] not in processed_activities:
+                results.append(result)
+                processed_activities.add(result["activity"])  # Add the activity to the set
+                print(f"Threat detected: {result}")
+                
+                # Write to file immediately for real-time alerts
+                with open(output_file, "w") as out_f:
+                    json.dump(results, out_f, indent=4)
+
+    except KeyboardInterrupt:
+        print("\n🛑 Analysis stopped")
